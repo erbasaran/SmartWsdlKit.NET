@@ -1,0 +1,430 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmartWsdlKit.SourceGenerators</name>
+    </assembly>
+    <members>
+        <member name="T:SmartWsdlKit.SourceGenerators.WsdlClientSourceGenerator">
+            <summary>
+            Roslyn incremental source generator that translates WSDL files into C# proxy clients at compile time.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SourceGenerators.WsdlClientSourceGenerator.Initialize(Microsoft.CodeAnalysis.IncrementalGeneratorInitializationContext)">
+            <summary>
+            Initializes the generator pipeline.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.SoapException">
+            <summary>
+            Base exception for all SmartWsdlKit related errors.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SoapException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SoapException"/> class.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SoapException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SoapException"/> class with a specified error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:SmartWsdlKit.SoapException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SoapException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception.</param>
+        </member>
+        <member name="T:SmartWsdlKit.SoapFaultException">
+            <summary>
+            Exception thrown when a SOAP service returns a SOAP Fault.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapFaultException.FaultCode">
+            <summary>
+            Gets the fault code (e.g., soap:Client, soap:Server, or Soap 1.2 codes like Value, Receiver).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapFaultException.FaultString">
+            <summary>
+            Gets the fault string/reason describing the error.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapFaultException.FaultActor">
+            <summary>
+            Gets the actor/role that caused the fault.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapFaultException.DetailXml">
+            <summary>
+            Gets the detailed XML string of the fault, if provided.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SoapFaultException.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SoapFaultException"/> class.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlParseException">
+            <summary>
+            Exception thrown when parsing of WSDL fails.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlParseException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.WsdlParseException"/> class.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlParseException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.WsdlParseException"/> class with a specified error message.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlParseException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.WsdlParseException"/> class with a specified error message and inner exception.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.SchemaValidationException">
+            <summary>
+            Exception thrown when XML Schema validation fails.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SchemaValidationException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SchemaValidationException"/> class.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SchemaValidationException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SchemaValidationException"/> class with a specified error message.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SchemaValidationException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SchemaValidationException"/> class with a specified error message and inner exception.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlDocument">
+            <summary>
+            Represents a parsed WSDL definition document supporting both WSDL 1.1 and 2.0.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.TargetNamespace">
+            <summary>
+            Gets the target namespace of the WSDL document.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Services">
+            <summary>
+            Gets the services exposed by this WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Bindings">
+            <summary>
+            Gets the bindings defined in this WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Interfaces">
+            <summary>
+            Gets the interfaces (portTypes in WSDL 1.1) defined in this WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Operations">
+            <summary>
+            Gets all operations across all interfaces.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Schemas">
+            <summary>
+            Gets the compiled XML Schema set containing all types defined or imported in this WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlDocument.Imports">
+            <summary>
+            Gets the list of raw imported documents (WSDLs/XSDs) resolved during loading.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlDocument.Load(System.String)">
+            <summary>
+            Loads a WSDL document from a URI (file or HTTP/HTTPS).
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlDocument.LoadAsync(System.String)">
+            <summary>
+            Loads a WSDL document asynchronously from a URI.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlService">
+            <summary>
+            Represents a service in the WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlService.Name">
+            <summary>
+            Gets the name of the service.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlService.Documentation">
+            <summary>
+            Gets the documentation, if any.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlService.Endpoints">
+            <summary>
+            Gets the endpoints (ports) associated with this service.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlEndpoint">
+            <summary>
+            Represents an endpoint (port in WSDL 1.1, endpoint in WSDL 2.0).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlEndpoint.Name">
+            <summary>
+            Gets the name of the endpoint.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlEndpoint.Binding">
+            <summary>
+            Gets the binding associated with this endpoint.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlEndpoint.Address">
+            <summary>
+            Gets the address location URL.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlBinding">
+            <summary>
+            Represents a binding in the WSDL.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.Name">
+            <summary>
+            Gets the name of the binding.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.Interface">
+            <summary>
+            Gets the associated interface (portType in WSDL 1.1).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.Transport">
+            <summary>
+            Gets the transport protocol URI (e.g. http://schemas.xmlsoap.org/soap/http).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.SoapVersion">
+            <summary>
+            Gets the SOAP version of this binding.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.Style">
+            <summary>
+            Gets the binding style ("document" or "rpc").
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBinding.Operations">
+            <summary>
+            Gets operation-specific binding details.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlBindingOperation">
+            <summary>
+            Represents binding-specific details for an operation.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBindingOperation.Name">
+            <summary>
+            Gets the operation name.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBindingOperation.SoapAction">
+            <summary>
+            Gets the SOAP action URI.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlBindingOperation.Style">
+            <summary>
+            Gets the soap:body binding style override ("document" or "rpc").
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlInterface">
+            <summary>
+            Represents an interface (portType in WSDL 1.1, interface in WSDL 2.0).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlInterface.Name">
+            <summary>
+            Gets the name of the interface.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlInterface.Operations">
+            <summary>
+            Gets the list of operations exposed by this interface.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlOperation">
+            <summary>
+            Represents a single service operation.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.Name">
+            <summary>
+            Gets the name of the operation.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.Interface">
+            <summary>
+            Gets the associated WsdlInterface.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.InputMessageName">
+            <summary>
+            Gets the input message name.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.InputElementName">
+            <summary>
+            Gets the input element local XML name defined in XSD schemas.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.InputElementNamespace">
+            <summary>
+            Gets the target namespace of the input XML element.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.OutputMessageName">
+            <summary>
+            Gets the output message name.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.OutputElementName">
+            <summary>
+            Gets the output element local XML name defined in XSD schemas.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.OutputElementNamespace">
+            <summary>
+            Gets the target namespace of the output XML element.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.SoapAction">
+            <summary>
+            Gets the soapAction associated with this operation.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.WsdlOperation.Style">
+            <summary>
+            Gets the style of the operation ("document" or "rpc").
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.SoapVersion">
+            <summary>
+            Supported SOAP protocol versions.
+            </summary>
+        </member>
+        <member name="F:SmartWsdlKit.SoapVersion.Soap11">
+            <summary>
+            SOAP 1.1 Protocol (http://schemas.xmlsoap.org/soap/envelope/)
+            </summary>
+        </member>
+        <member name="F:SmartWsdlKit.SoapVersion.Soap12">
+            <summary>
+            SOAP 1.2 Protocol (http://www.w3.org/2003/05/soap-envelope)
+            </summary>
+        </member>
+        <member name="F:SmartWsdlKit.SoapVersion.Http">
+            <summary>
+            Non-SOAP HTTP binding.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlParser">
+            <summary>
+            Parses WSDL 1.1 and 2.0 documents into a WsdlDocument structure.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlParser.Load(System.String)">
+            <summary>
+            Loads and parses a WSDL document from a URI.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlParser.LoadAsync(System.String)">
+            <summary>
+            Loads and parses a WSDL document asynchronously from a URI.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.CodeGeneratorOptions">
+            <summary>
+            Configuration options for code generation.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.CodeGeneratorOptions.Namespace">
+            <summary>
+            Gets or sets the target namespace of the generated classes. Default is "SmartWsdlKit.Generated".
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.CodeGeneratorOptions.GenerateRecords">
+            <summary>
+            Gets or sets a value indicating whether to generate C# 9.0 Records instead of standard POCO classes. Default is false.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.CodeGeneratorOptions.EnableNullableReferenceTypes">
+            <summary>
+            Gets or sets a value indicating whether to make reference types nullable (C# Nullable Reference Types). Default is true.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.WsdlCodeGenerator">
+            <summary>
+            Generates C# DTOs, interfaces, and clients from a WsdlDocument.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlCodeGenerator.Generate(SmartWsdlKit.WsdlDocument)">
+            <summary>
+            Generates C# source code from WSDL metadata using default options.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.WsdlCodeGenerator.Generate(SmartWsdlKit.WsdlDocument,SmartWsdlKit.CodeGeneratorOptions)">
+            <summary>
+            Generates C# source code from WSDL metadata with specified options.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.SoapAttachment">
+            <summary>
+            Represents an attachment for SOAP requests (MTOM or SOAP with Attachments).
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapAttachment.ContentId">
+            <summary>
+            Gets the unique Content-ID of the attachment.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapAttachment.ContentType">
+            <summary>
+            Gets the MIME content type of the attachment (e.g. "application/octet-stream" or "image/png").
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapAttachment.Data">
+            <summary>
+            Gets the raw binary data of the attachment.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.SoapAttachment.FileName">
+            <summary>
+            Gets the optional filename of the attachment.
+            </summary>
+        </member>
+        <member name="M:SmartWsdlKit.SoapAttachment.#ctor(System.String,System.Byte[],System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SmartWsdlKit.SoapAttachment"/> class.
+            </summary>
+            <param name="contentId">The unique attachment identifier.</param>
+            <param name="data">The raw binary payload of the attachment.</param>
+            <param name="contentType">The MIME type of the content.</param>
+            <param name="fileName">Optional filename associated with this payload.</param>
+        </member>
+    </members>
+</doc>

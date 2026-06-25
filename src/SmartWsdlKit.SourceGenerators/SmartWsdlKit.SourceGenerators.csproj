@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <BuildOutputTargetFolder>analyzers/dotnet/cs</BuildOutputTargetFolder>
+    <NoWarn>$(NoWarn);RS1035</NoWarn>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyName>SmartWsdlKit.SourceGenerators</AssemblyName>
+		<PackageId>SmartWsdlKit.SourceGenerators</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Ramazan Erbasaran</Authors>
+		<Copyright>Copyright © 2026 Ramazan Erbasaran</Copyright>
+    <Description>Roslyn source generator companion package for SmartWsdlKit. Automatically generates strongly-typed, high-performance SOAP client proxies and DTO record models from WSDL files at compile time to eliminate reflection overhead and connected service dependency.</Description>
+    <PackageTags>wsdl;soap;client;source-generator;roslyn;analyzer;code-generator;compilation-time;proxy-generator;dotnet-standard</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/erbasaran/SmartWsdlKit.NET</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/erbasaran/SmartWsdlKit.NET</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SmartWsdlKit\Exceptions.cs" Link="Exceptions.cs" />
+    <Compile Include="..\SmartWsdlKit\WsdlModels.cs" Link="WsdlModels.cs" />
+    <Compile Include="..\SmartWsdlKit\WsdlParser.cs" Link="WsdlParser.cs" />
+    <Compile Include="..\SmartWsdlKit\WsdlCodeGenerator.cs" Link="WsdlCodeGenerator.cs" />
+    <Compile Include="..\SmartWsdlKit\SoapAttachment.cs" Link="SoapAttachment.cs" />
+  </ItemGroup>
+
+</Project>

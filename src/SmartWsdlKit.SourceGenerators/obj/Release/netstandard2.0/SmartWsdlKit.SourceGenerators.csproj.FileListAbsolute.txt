@@ -1,0 +1,12 @@
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\bin\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.deps.json
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\bin\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.dll
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\bin\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.pdb
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\bin\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.xml
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.csproj.AssemblyReference.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.GeneratedMSBuildEditorConfig.editorconfig
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.AssemblyInfoInputs.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.AssemblyInfo.cs
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.csproj.CoreCompileInputs.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.dll
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.xml
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit.SourceGenerators\obj\Release\netstandard2.0\SmartWsdlKit.SourceGenerators.pdb

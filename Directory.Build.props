@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- NuGet Metadata -->
+    <Version>1.0.0</Version>
+    <Authors>SmartWsdlKit Authors</Authors>
+    <Company>SmartWsdlKit</Company>
+    <Description>A lightweight, high-performance, enterprise-grade WSDL and SOAP client toolkit for .NET. Eliminates Connected Services and svcutil.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/open-source/SmartWsdlKit</RepositoryUrl>
+    <PackageTags>wsdl soap client soap11 soap12 xml xsd web-services dotnet-standard source-generator openapi json-schema</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)README.md')" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,38 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    name: Package & Publish to NuGet
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore SmartWsdlKit.slnx
+
+    - name: Build Project
+      run: dotnet build src/SmartWsdlKit/SmartWsdlKit.csproj --configuration Release --no-restore
+
+    - name: Pack Library
+      run: dotnet pack src/SmartWsdlKit/SmartWsdlKit.csproj --configuration Release --output nuget-packages --no-build
+
+    - name: Push to NuGet
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        dotnet nuget push "nuget-packages/*.nupkg" \
+          --api-key "$NUGET_AUTH_TOKEN" \
+          --source "https://api.nuget.org/v3/index.json" \
+          --skip-duplicate

@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyName>SmartWsdlKit</AssemblyName>
+		<PackageId>SmartWsdlKit</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Ramazan Erbasaran</Authors>
+		<Copyright>Copyright © 2026 Ramazan Erbasaran</Copyright>
+    <Description>SmartWsdlKit is a lightweight, high-performance, enterprise-grade WSDL and SOAP client toolkit for .NET. It eliminates the complexity of Visual Studio Connected Services, svcutil, and legacy WCF configs by providing a modern, developer-friendly fluent API. Supports SOAP 1.1/1.2, SwA/MTOM attachments, lightweight Polly-less retries and circuit breaker, diagnostics traffic inspector, WS-Security UsernameToken (plaintext/digest), NTLM, and WSDL to OpenAPI 3.x / JSON Schema conversion.</Description>
+    <PackageTags>wsdl;soap;client;soap11;soap12;xml;xsd;mtom;swa;resilience;retry;circuit-breaker;diagnostics;inspector;wcf;web-services;dotnet-standard;openapi;json-schema</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/erbasaran/SmartWsdlKit.NET</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/erbasaran/SmartWsdlKit.NET</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" />
+  </ItemGroup>
+
+</Project>

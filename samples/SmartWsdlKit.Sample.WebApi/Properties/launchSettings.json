@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SmartWsdlKit.Sample.WebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:58902;http://localhost:58903"
+    }
+  }
+}

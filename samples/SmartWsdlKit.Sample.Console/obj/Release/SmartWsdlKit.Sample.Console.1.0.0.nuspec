@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>SmartWsdlKit.Sample.Console</id>
+    <version>1.0.0</version>
+    <authors>SmartWsdlKit Authors</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <description>A lightweight, high-performance, enterprise-grade WSDL and SOAP client toolkit for .NET. Eliminates Connected Services and svcutil.</description>
+    <tags>wsdl soap client soap11 soap12 xml xsd web-services dotnet-standard source-generator openapi json-schema</tags>
+    <repository type="git" url="https://github.com/open-source/SmartWsdlKit" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="SmartWsdlKit" version="1.0.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\TuikUser\59251405898\Desktop\SmartWsdlKit\samples\SmartWsdlKit.Sample.Console\bin\Release\net10.0\SmartWsdlKit.Sample.Console.runtimeconfig.json" target="lib\net10.0\SmartWsdlKit.Sample.Console.runtimeconfig.json" />
+    <file src="D:\TuikUser\59251405898\Desktop\SmartWsdlKit\samples\SmartWsdlKit.Sample.Console\bin\Release\net10.0\SmartWsdlKit.Sample.Console.dll" target="lib\net10.0\SmartWsdlKit.Sample.Console.dll" />
+    <file src="D:\TuikUser\59251405898\Desktop\SmartWsdlKit\samples\SmartWsdlKit.Sample.Console\bin\Release\net10.0\SmartWsdlKit.Sample.Console.xml" target="lib\net10.0\SmartWsdlKit.Sample.Console.xml" />
+    <file src="D:\TuikUser\59251405898\Desktop\SmartWsdlKit\README.md" target="\README.md" />
+  </files>
+</package>

@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Source Generators / Analyzers dependencies -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
+
+    <!-- Standard library helper for older targets (if needed, though standard 2.0 has basic JSON through packages) -->
+    <PackageVersion Include="System.Text.Json" Version="9.0.0" />
+
+    <!-- Testing dependencies -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+
+    <!-- Web API sample dependencies -->
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+  </ItemGroup>
+</Project>

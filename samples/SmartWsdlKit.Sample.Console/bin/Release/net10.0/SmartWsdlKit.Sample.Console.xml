@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmartWsdlKit.Sample.Console</name>
+    </assembly>
+    <members>
+        <member name="T:SmartWsdlKit.Sample.ConsoleApp.CapitalCityResponse">
+            <summary>
+            Represents the strongly-typed XML model of the CapitalCity response element.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.Sample.ConsoleApp.CapitalCityResponse.CapitalCityResult">
+            <summary>
+            Gets or sets the capital city string result.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.Sample.ConsoleApp.ListOfLanguagesByCodeResponse">
+            <summary>
+            Represents the strongly-typed XML model of the ListOfLanguagesByCode response element.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.Sample.ConsoleApp.ListOfLanguagesByCodeResponse.Languages">
+            <summary>
+            Gets or sets the list of language objects returned.
+            </summary>
+        </member>
+        <member name="T:SmartWsdlKit.Sample.ConsoleApp.LanguageCodeAndName">
+            <summary>
+            Holds the language code and its corresponding name.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.Sample.ConsoleApp.LanguageCodeAndName.sISOCode">
+            <summary>
+            Gets or sets the language ISO code.
+            </summary>
+        </member>
+        <member name="P:SmartWsdlKit.Sample.ConsoleApp.LanguageCodeAndName.sName">
+            <summary>
+            Gets or sets the name of the language.
+            </summary>
+        </member>
+    </members>
+</doc>

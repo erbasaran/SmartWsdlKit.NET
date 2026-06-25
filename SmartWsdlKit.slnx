@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/SmartWsdlKit.Sample.Console/SmartWsdlKit.Sample.Console.csproj" />
+    <Project Path="samples/SmartWsdlKit.Sample.WebApi/SmartWsdlKit.Sample.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/SmartWsdlKit.SourceGenerators/SmartWsdlKit.SourceGenerators.csproj" />
+    <Project Path="src/SmartWsdlKit/SmartWsdlKit.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SmartWsdlKit.IntegrationTests/SmartWsdlKit.IntegrationTests.csproj" />
+    <Project Path="tests/SmartWsdlKit.UnitTests/SmartWsdlKit.UnitTests.csproj" />
+  </Folder>
+</Solution>

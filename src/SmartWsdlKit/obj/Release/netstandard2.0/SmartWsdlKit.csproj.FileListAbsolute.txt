@@ -1,0 +1,12 @@
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\bin\Release\netstandard2.0\SmartWsdlKit.deps.json
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\bin\Release\netstandard2.0\SmartWsdlKit.dll
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\bin\Release\netstandard2.0\SmartWsdlKit.pdb
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\bin\Release\netstandard2.0\SmartWsdlKit.xml
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.csproj.AssemblyReference.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.GeneratedMSBuildEditorConfig.editorconfig
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.AssemblyInfoInputs.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.AssemblyInfo.cs
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.csproj.CoreCompileInputs.cache
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.dll
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.xml
+D:\TuikUser\59251405898\Desktop\SmartWsdlKit\src\SmartWsdlKit\obj\Release\netstandard2.0\SmartWsdlKit.pdb
