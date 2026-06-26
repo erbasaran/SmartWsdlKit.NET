@@ -21,6 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)README.md')" />
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="Exists('$(MSBuildThisFileDirectory)README.md') And !Exists('README.md')" />
   </ItemGroup>
 </Project>
