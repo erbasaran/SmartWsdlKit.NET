@@ -1,6 +1,7 @@
 ## Ignore Visual Studio temporary files, build results, and crash dumps
-[Ob]bin/
-[Ob]obj/
+.vs/
+[Bb]in/
+[Oo]bj/
 *.user
 *.userosscache
 *.sln.docstates
