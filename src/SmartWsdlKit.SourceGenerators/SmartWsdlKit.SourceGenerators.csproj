@@ -9,7 +9,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyName>SmartWsdlKit.SourceGenerators</AssemblyName>
 		<PackageId>SmartWsdlKit.SourceGenerators</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Ramazan Erbasaran</Authors>
 		<Copyright>Copyright © 2026 Ramazan Erbasaran</Copyright>
 		<Description>Roslyn source generator companion package for SmartWsdlKit. Automatically generates strongly-typed, high-performance SOAP client proxies and DTO record models from WSDL files at compile time to eliminate reflection overhead and connected service dependency.</Description>

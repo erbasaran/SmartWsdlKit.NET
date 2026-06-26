@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
@@ -49,6 +50,41 @@ namespace SmartWsdlKit
 	/// </summary>
 	public class SoapClient : IDisposable
 	{
+		private readonly bool _ownsHttpClient = true;
+
+		private class CachedProperty
+		{
+			public string Name { get; set; } = string.Empty;
+			public string XmlName { get; set; } = string.Empty;
+			public PropertyInfo PropertyInfo { get; set; } = null!;
+		}
+
+		private static readonly ConcurrentDictionary<Type, CachedProperty[]> PropertyInfoCache = new ConcurrentDictionary<Type, CachedProperty[]>();
+
+		private static CachedProperty[] GetCachedProperties(Type type)
+		{
+			return PropertyInfoCache.GetOrAdd(type, t =>
+			{
+				var props = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+				var list = new List<CachedProperty>();
+				foreach (var prop in props)
+				{
+					var xmlElAttr = prop.GetCustomAttribute<XmlElementAttribute>();
+					var elName = (xmlElAttr != null && !string.IsNullOrEmpty(xmlElAttr.ElementName))
+						? xmlElAttr.ElementName
+						: prop.Name;
+
+					list.Add(new CachedProperty
+					{
+						Name = prop.Name,
+						XmlName = elName,
+						PropertyInfo = prop
+					});
+				}
+				return list.ToArray();
+			});
+		}
+
 		private HttpClient _httpClient;
 		private readonly SoapClientOptions _options;
 		private readonly WsdlDocument? _wsdl;
@@ -117,6 +153,18 @@ namespace SmartWsdlKit
 			_options = options ?? throw new ArgumentNullException(nameof(options));
 			_resilienceEngine = new SoapResilienceEngine(options.CircuitBreakerFailureThreshold, options.CircuitBreakerResetTimeout);
 			_httpClient = CreateHttpClient(options, null, null, null);
+			_ownsHttpClient = true;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SoapClient"/> class using a pre-configured HttpClient and client options.
+		/// </summary>
+		public SoapClient(HttpClient httpClient, SoapClientOptions options)
+		{
+			_options = options ?? throw new ArgumentNullException(nameof(options));
+			_httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+			_resilienceEngine = new SoapResilienceEngine(options.CircuitBreakerFailureThreshold, options.CircuitBreakerResetTimeout);
+			_ownsHttpClient = false;
 		}
 
 		/// <summary>
@@ -132,6 +180,7 @@ namespace SmartWsdlKit
 
 			_options.Credentials = creds;
 			_httpClient = CreateHttpClient(options, creds, null, null);
+			_ownsHttpClient = true;
 		}
 
 		private SoapClient(SoapClientOptions options, WsdlDocument wsdl)
@@ -151,6 +200,7 @@ namespace SmartWsdlKit
 			}
 
 			_httpClient = CreateHttpClient(_options, null, null, null);
+			_ownsHttpClient = true;
 		}
 
 		/// <summary>
@@ -288,7 +338,10 @@ namespace SmartWsdlKit
 
 		private void RecreateHttpClient()
 		{
-			_httpClient?.Dispose();
+			if (_ownsHttpClient)
+			{
+				_httpClient?.Dispose();
+			}
 			_httpClient = CreateHttpClient(_options, null, null, null);
 		}
 
@@ -685,6 +738,10 @@ namespace SmartWsdlKit
 					lock (_diagLock)
 					{
 						_diagnostics.Add(log);
+						while (_diagnostics.Count > _options.MaxDiagnosticsCount)
+						{
+							_diagnostics.RemoveAt(0);
+						}
 					}
 				}
 			}
@@ -841,7 +898,20 @@ namespace SmartWsdlKit
 				return;
 			}
 
-			// If list or array
+			// If it's a Dictionary
+			if (value is IDictionary dictVal)
+			{
+				var complexEl = new XElement(tns + key);
+				foreach (DictionaryEntry entry in dictVal)
+				{
+					var propName = entry.Key.ToString() ?? string.Empty;
+					SerializeParameter(complexEl, propName, entry.Value, tns, attachments);
+				}
+				parent.Add(complexEl);
+				return;
+			}
+
+			// If list or array (excluding string and dictionary)
 			if (value is IEnumerable list && !(value is string))
 			{
 				foreach (var item in list)
@@ -863,20 +933,11 @@ namespace SmartWsdlKit
 			{
 				// Complex Object
 				var complexEl = new XElement(tns + key);
-				var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-				foreach (var prop in properties)
+				var cachedProps = GetCachedProperties(type);
+				foreach (var cachedProp in cachedProps)
 				{
-					var propVal = prop.GetValue(value);
-
-					// Support Custom XmlElementAttribute naming
-					var elName = prop.Name;
-					var xmlElAttr = prop.GetCustomAttribute<XmlElementAttribute>();
-					if (xmlElAttr != null && !string.IsNullOrEmpty(xmlElAttr.ElementName))
-					{
-						elName = xmlElAttr.ElementName;
-					}
-
-					SerializeParameter(complexEl, elName, propVal, tns, attachments);
+					var propVal = cachedProp.PropertyInfo.GetValue(value);
+					SerializeParameter(complexEl, cachedProp.XmlName, propVal, tns, attachments);
 				}
 				parent.Add(complexEl);
 			}
@@ -931,7 +992,10 @@ namespace SmartWsdlKit
 		/// </summary>
 		public void Dispose()
 		{
-			_httpClient.Dispose();
+			if (_ownsHttpClient)
+			{
+				_httpClient.Dispose();
+			}
 		}
 	}
 
@@ -943,7 +1007,7 @@ namespace SmartWsdlKit
 		private readonly SoapClient _client;
 		private readonly string _operationName;
 		private readonly WsdlOperation? _metadata;
-		private readonly Dictionary<string, object?> _parameters = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+		internal readonly Dictionary<string, object?> _parameters = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 		private readonly List<XElement> _customSoapHeaders = new List<XElement>();
 		private readonly Dictionary<string, string> _customHttpHeaders = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 		private readonly List<SoapAttachment> _attachments = new List<SoapAttachment>();
@@ -1118,6 +1182,69 @@ namespace SmartWsdlKit
 			var response = await ExecuteAsync(cancellationToken).ConfigureAwait(false);
 			return response.As(type);
 		}
+
+		/// <summary>
+		/// Adds parameters to the SOAP request body from a JSON string.
+		/// </summary>
+		public SoapOperationBuilder WithJson(string json)
+		{
+			if (string.IsNullOrWhiteSpace(json)) return this;
+			using var doc = System.Text.Json.JsonDocument.Parse(json);
+			return WithJson(doc);
+		}
+
+		/// <summary>
+		/// Adds parameters to the SOAP request body from a JsonDocument.
+		/// </summary>
+		public SoapOperationBuilder WithJson(System.Text.Json.JsonDocument jsonDocument)
+		{
+			if (jsonDocument == null) throw new ArgumentNullException(nameof(jsonDocument));
+			var root = jsonDocument.RootElement;
+			if (root.ValueKind == System.Text.Json.JsonValueKind.Object)
+			{
+				foreach (var prop in root.EnumerateObject())
+				{
+					_parameters[prop.Name] = ConvertJsonElement(prop.Value);
+				}
+			}
+			return this;
+		}
+
+		private object? ConvertJsonElement(System.Text.Json.JsonElement element)
+		{
+			switch (element.ValueKind)
+			{
+				case System.Text.Json.JsonValueKind.Object:
+					var dict = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+					foreach (var prop in element.EnumerateObject())
+					{
+						dict[prop.Name] = ConvertJsonElement(prop.Value);
+					}
+					return dict;
+				case System.Text.Json.JsonValueKind.Array:
+					var list = new List<object?>();
+					foreach (var item in element.EnumerateArray())
+					{
+						list.Add(ConvertJsonElement(item));
+					}
+					return list;
+				case System.Text.Json.JsonValueKind.String:
+					return element.GetString();
+				case System.Text.Json.JsonValueKind.Number:
+					if (element.TryGetInt32(out int i)) return i;
+					if (element.TryGetInt64(out long l)) return l;
+					if (element.TryGetDecimal(out decimal d)) return d;
+					if (element.TryGetDouble(out double db)) return db;
+					return element.GetRawText();
+				case System.Text.Json.JsonValueKind.True:
+					return true;
+				case System.Text.Json.JsonValueKind.False:
+					return false;
+				case System.Text.Json.JsonValueKind.Null:
+				default:
+					return null;
+			}
+		}
 	}
 
 	/// <summary>
@@ -1125,6 +1252,20 @@ namespace SmartWsdlKit
 	/// </summary>
 	public class SoapResponse
 	{
+		private static readonly ConcurrentDictionary<(Type Type, string LocalName, string Namespace), XmlSerializer> SerializerCache =
+			new ConcurrentDictionary<(Type Type, string LocalName, string Namespace), XmlSerializer>();
+
+		private static XmlSerializer GetCachedSerializer(Type type, string localName, string ns)
+		{
+			return SerializerCache.GetOrAdd((type, localName, ns), key =>
+			{
+				return new XmlSerializer(key.Type, new XmlRootAttribute(key.LocalName)
+				{
+					Namespace = key.Namespace
+				});
+			});
+		}
+
 		/// <summary>
 		/// Gets the raw XML string returned by the SOAP endpoint.
 		/// </summary>
@@ -1152,11 +1293,7 @@ namespace SmartWsdlKit
 				throw new SoapException("SOAP response body does not contain a child element to deserialize.");
 			}
 
-			// Using standard XmlSerializer mapping
-			var serializer = new XmlSerializer(typeof(T), new XmlRootAttribute(targetElement.Name.LocalName)
-			{
-				Namespace = targetElement.Name.NamespaceName
-			});
+			var serializer = GetCachedSerializer(typeof(T), targetElement.Name.LocalName, targetElement.Name.NamespaceName);
 
 			using var reader = targetElement.CreateReader();
 			return (T)serializer.Deserialize(reader);
@@ -1174,14 +1311,28 @@ namespace SmartWsdlKit
 				throw new SoapException("SOAP response body does not contain a child element to deserialize.");
 			}
 
-			// Using standard XmlSerializer mapping
-			var serializer = new XmlSerializer(type, new XmlRootAttribute(targetElement.Name.LocalName)
-			{
-				Namespace = targetElement.Name.NamespaceName
-			});
+			var serializer = GetCachedSerializer(type, targetElement.Name.LocalName, targetElement.Name.NamespaceName);
 
 			using var reader = targetElement.CreateReader();
 			return serializer.Deserialize(reader);
+		}
+
+		/// <summary>
+		/// Serializes the parsed SOAP response body structure directly into a JSON string.
+		/// </summary>
+		public string AsJson()
+		{
+			var dict = ToDictionary();
+			return System.Text.Json.JsonSerializer.Serialize(dict);
+		}
+
+		/// <summary>
+		/// Deserializes the SOAP response body structure from JSON into a typed object.
+		/// </summary>
+		public T? AsJson<T>()
+		{
+			var json = AsJson();
+			return System.Text.Json.JsonSerializer.Deserialize<T>(json);
 		}
 
 		/// <summary>

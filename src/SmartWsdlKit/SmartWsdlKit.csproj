@@ -5,7 +5,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<AssemblyName>SmartWsdlKit</AssemblyName>
 		<PackageId>SmartWsdlKit</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Ramazan Erbasaran</Authors>
 		<Copyright>Copyright © 2026 Ramazan Erbasaran</Copyright>
 		<Description>SmartWsdlKit is a lightweight, high-performance, enterprise-grade WSDL and SOAP client toolkit for .NET. It eliminates the complexity of Visual Studio Connected Services, svcutil, and legacy WCF configs by providing a modern, developer-friendly fluent API. Supports SOAP 1.1/1.2, SwA/MTOM attachments, lightweight Polly-less retries and circuit breaker, diagnostics traffic inspector, WS-Security UsernameToken (plaintext/digest), NTLM, and WSDL to OpenAPI 3.x / JSON Schema conversion.</Description>

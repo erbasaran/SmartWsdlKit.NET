@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Xunit;
 
@@ -113,6 +115,64 @@ namespace SmartWsdlKit.UnitTests
 			Assert.Contains("http://mycustomns.org/", xml);
 			Assert.Contains("<AuthHeader xmlns=\"http://mycustomns.org/\">SecretTokenValue</AuthHeader>", xml);
 			Assert.Contains("<SessionId xmlns=\"http://mycustomns.org/\">9999</SessionId>", xml);
+		}
+
+		[Fact]
+		public void Constructor_WithCustomHttpClient_InjectsSuccessfully()
+		{
+			// Arrange
+			using var httpClient = new System.Net.Http.HttpClient();
+			var options = new SoapClientOptions();
+
+			// Act
+			using var client = new SoapClient(httpClient, options);
+
+			// Assert
+			Assert.Same(options, client.Options);
+		}
+
+		[Fact]
+		public void BuildSoapEnvelope_WithDictionaryAndJson_SerializesCorrectly()
+		{
+			// Arrange
+			var options = new SoapClientOptions();
+			using var client = new SoapClient(options);
+
+			var builder = client.Operation("SaveDetails")
+				.WithJson("{\"Name\":\"John\",\"Age\":30,\"Details\":{\"City\":\"Ankara\",\"Code\":6}}");
+
+			// Act
+			var xml = client.BuildSoapEnvelope("SaveDetails", "http://tempuri.org/", SoapVersion.Soap11, builder._parameters, new List<XElement>());
+
+			// Assert
+			Assert.Contains("<tns:Name>John</tns:Name>", xml);
+			Assert.Contains("<tns:Age>30</tns:Age>", xml);
+			Assert.Contains("<tns:City>Ankara</tns:City>", xml);
+			Assert.Contains("<tns:Code>6</tns:Code>", xml);
+		}
+
+		[Fact]
+		public void SoapResponse_AsJson_SerializesDictionaryCorrectly()
+		{
+			// Arrange
+			var xml = @"<soap:Envelope xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+  <soap:Body>
+    <GetInfoResponse xmlns=""http://tempuri.org/"">
+      <Status>Success</Status>
+      <Code>200</Code>
+    </GetInfoResponse>
+  </soap:Body>
+</soap:Envelope>";
+			var doc = XDocument.Parse(xml);
+			var body = doc.Root.Element(XNamespace.Get("http://schemas.xmlsoap.org/soap/envelope/") + "Body");
+			var response = new SoapResponse(xml, body);
+
+			// Act
+			var json = response.AsJson();
+
+			// Assert
+			Assert.Contains("\"Status\":\"Success\"", json);
+			Assert.Contains("\"Code\":\"200\"", json);
 		}
 	}
 }

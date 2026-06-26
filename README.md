@@ -93,6 +93,27 @@ var resultDict = response.ToDictionary();
 Console.WriteLine($"Capital City: {resultDict["CapitalCityResult"]}"); // Outputs: Ankara
 ```
 
+### JSON Support & Dynamic Invocation
+
+SmartWsdlKit provides first-class support for JSON structures. You can call SOAP operations using a JSON string or `JsonDocument` and fetch the SOAP response body directly as JSON:
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using SmartWsdlKit;
+
+// Call operation using a raw JSON string payload
+var response = await client
+    .Operation("CapitalCity")
+    .WithJson("{\"sCountryISOCode\":\"TR\"}")
+    .ExecuteAsync();
+
+// Read response body directly as a JSON string
+string jsonStr = response.AsJson();
+Console.WriteLine(jsonStr); // Outputs: {"CapitalCityResult":"Ankara"}
+```
+
+
 ### Strongly-Typed Response Casting
 
 Annotate your target classes with standard C# `System.Xml.Serialization` attributes, and cast the response dynamically:
@@ -426,10 +447,24 @@ File.WriteAllText("openapi-spec.json", openApiJson);
 
 ## Performance Notes & Best Practices
 
-1. **Reuse SoapClient:** SoapClient manages an underlying `HttpClient` instance. Keep it as a singleton or register it as a long-lived dependency to prevent socket exhaustion.
-2. **Culture Invariance:** SmartWsdlKit automatically formats parameters (like `decimal`, `double`, and `DateTime`) using `CultureInfo.InvariantCulture`. Avoid manual string formatting which might clash with localized system cultures (e.g. Turkish `İ/i` or European comma separators).
-3. **SOAP Fault Handling:** If the service returns a SOAP Fault, SmartWsdlKit parses the Fault information and throws a structured `SoapFaultException` containing the code, reason, and detail elements.
-4. **Non-200 Response Fallback:** If a SOAP endpoint returns a non-200 status code and the response is not valid XML (e.g. gateway HTML error pages), SmartWsdlKit extracts the raw HTML text as a backup plan and includes it inside the thrown `SoapException`.
+1. **Reuse SoapClient & HttpClient Integration:** `SoapClient` supports dependency injection and connection pooling. Instead of creating short-lived clients, you can register `SoapClient` in your ASP.NET Core service container with standard `HttpClient` injection:
+   ```csharp
+   builder.Services.AddHttpClient<SoapClient>((httpClient, sp) =>
+   {
+       var options = new SoapClientOptions
+       {
+           BaseAddress = new Uri("http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso"),
+           EnableDiagnostics = true,
+           MaxDiagnosticsCount = 50 // Rolling buffer limit to prevent memory leaks in production
+       };
+       return new SoapClient(httpClient, options);
+   });
+   ```
+2. **Pre-Compiled XmlSerializer Caching:** `SoapResponse.As<T>()` automatically caches the dynamically generated `XmlSerializer` instances. This prevents severe memory leaks (assemblies not garbage collected) and speeds up XML-to-POCO deserialization by avoiding runtime compilation on every response.
+3. **Property Reflection Cache:** SOAP parameters serialization is optimized using a thread-safe property cache to prevent reflection overhead during hot paths.
+4. **Culture Invariance:** SmartWsdlKit automatically formats parameters (like `decimal`, `double`, and `DateTime`) using `CultureInfo.InvariantCulture`. Avoid manual string formatting which might clash with localized system cultures (e.g. Turkish `İ/i` or European comma separators).
+5. **SOAP Fault Handling:** If the service returns a SOAP Fault, SmartWsdlKit parses the Fault information and throws a structured `SoapFaultException` containing the code, reason, and detail elements.
+6. **Non-200 Response Fallback:** If a SOAP endpoint returns a non-200 status code and the response is not valid XML (e.g. gateway HTML error pages), SmartWsdlKit extracts the raw HTML text as a backup plan and includes it inside the thrown `SoapException`.
 
 ---
 

@@ -118,6 +118,12 @@ namespace SmartWsdlKit
 		public bool EnableDiagnostics { get; set; } = false;
 
 		/// <summary>
+		/// Gets or sets the maximum number of diagnostics log entries to keep in memory. Default is 100.
+		/// Prevents memory leaks under high traffic when diagnostics are enabled.
+		/// </summary>
+		public int MaxDiagnosticsCount { get; set; } = 100;
+
+		/// <summary>
 		/// Gets or sets network credentials (e.g. for NTLM/Kerberos authentication).
 		/// </summary>
 		public ICredentials? Credentials { get; set; }
